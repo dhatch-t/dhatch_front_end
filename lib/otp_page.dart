@@ -42,77 +42,85 @@ class _OtpPageState extends State<OtpPage> {
     String? otp;
     return Scaffold(
         appBar: AppBar(),
-        body: SafeArea(
-            child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.35,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    "Log in using the OTP sent to +${widget.phoneNumber}",
-                    style:
-                        GoogleFonts.adamina(fontSize: 20, color: Colors.black),
-                  ),
-                  OtpTextField(
-                    numberOfFields: 4,
-                    keyboardType: TextInputType.number,
-                    onSubmit: (value) {
-                      otp = value;
-                    },
-                  ),
-                  show
-                      ? TimerWidget(
-                          callback: _callback,
-                        )
-                      : Column(
-                          children: [
-                            Text(
-                              "Didn't get the OTP?",
-                              style: GoogleFonts.adamina(
-                                  fontSize: 18, color: Colors.grey),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                getOTP();
-                              },
-                              child: Text(
-                                "Resend Otp",
-                                style: GoogleFonts.adamina(
-                                    fontSize: 18, color: Colors.blue),
-                              ),
-                            ),
-                          ],
-                        ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.90,
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          BlocProvider.of<AuthBloc>(context)
-                              .add(AuthOtpEvent(otp: otp!));
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const SearchPage()));
+        body: SafeArea(child: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return SizedBox(
+              height: MediaQuery.of(context).size.height * 0.35,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        "Log in using the OTP sent to +${widget.phoneNumber}",
+                        style: GoogleFonts.adamina(
+                            fontSize: 20, color: Colors.black),
+                      ),
+                      OtpTextField(
+                        numberOfFields: 4,
+                        keyboardType: TextInputType.number,
+                        onSubmit: (value) {
+                          otp = value;
                         },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)))),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 5, bottom: 5),
-                          child: Text(
-                            "Verify",
-                            style: GoogleFonts.adamina(
-                                fontSize: 20, color: Colors.white),
-                          ),
-                        )),
+                      ),
+                      show
+                          ? TimerWidget(
+                              callback: _callback,
+                            )
+                          : Column(
+                              children: [
+                                Text(
+                                  "Didn't get the OTP?",
+                                  style: GoogleFonts.adamina(
+                                      fontSize: 18, color: Colors.grey),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    getOTP();
+                                  },
+                                  child: Text(
+                                    "Resend Otp",
+                                    style: GoogleFonts.adamina(
+                                        fontSize: 18, color: Colors.blue),
+                                  ),
+                                ),
+                              ],
+                            ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              BlocProvider.of<AuthBloc>(context)
+                                  .add(AuthOtpEvent(otp: otp!));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const SearchPage()));
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5)))),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 5, bottom: 5),
+                              child: Text(
+                                "Verify",
+                                style: GoogleFonts.adamina(
+                                    fontSize: 20, color: Colors.white),
+                              ),
+                            )),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         )));
   }
 }

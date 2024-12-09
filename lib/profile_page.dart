@@ -49,7 +49,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   TextField(
                     controller: _nameController,
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.text,
+                    style: GoogleFonts.adamina(fontSize: 20),
                     decoration: const InputDecoration(
                       hintText: "Enter Name",
                       hintStyle: TextStyle(fontSize: 20, color: Colors.grey),
@@ -74,6 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   TextField(
                     controller: _emailController,
                     keyboardType: TextInputType.text,
+                    style: GoogleFonts.adamina(fontSize: 20),
                     decoration: const InputDecoration(
                       hintText: "Enter Email Id",
                       hintStyle: TextStyle(fontSize: 20, color: Colors.grey),

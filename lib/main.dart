@@ -1,5 +1,6 @@
 import 'package:cab/bloc/auth_bloc.dart';
 import 'package:cab/home_page.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,8 +20,8 @@ Future<void> storeDeviceId() async {
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   storeDeviceId();
-  //runApp(DevicePreview(builder: (context) => const MyApp()));
-  runApp(const MyApp());
+  runApp(DevicePreview(builder: (context) => const MyApp()));
+  // runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

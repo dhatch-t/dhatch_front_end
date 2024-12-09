@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:cab/login.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,7 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return;
       } else {
         return emit(
-          AuthFailure('Password error'),
+          AuthFailure(error: 'Password error'),
         );
       }
     });
@@ -48,7 +47,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return emit(AuthSuccess(status: response.body));
       } else {
         return emit(
-          AuthFailure('Password error'),
+          AuthFailure(error: 'Password error'),
         );
       }
     });
@@ -61,13 +60,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
 
       if (event.customerName.isEmpty) {
-        return emit(AuthFailure("Please enter your name"));
+        return emit(AuthFailure(error: "Please enter your name"));
       }
       if (!event.customerEmail.contains("@gmail.com")) {
-        return emit(AuthFailure("Please enter valid email ID"));
+        return emit(AuthFailure(error: "Please enter valid email ID"));
       }
       if (event.customerGender.isEmpty) {
-        return emit(AuthFailure("Please select the gender"));
+        return emit(AuthFailure(error: "Please select the gender"));
       }
 
       final uri = Uri.parse('http://localhost:8081/Customer/saveProfile');
@@ -81,10 +80,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           "customerGender": event.customerGender
         }),
       );
-      print(response.body);
-      Login.fromjson(json.decode(response.body));
-      emit(AuthSuccess(status: "profile saved"));
-      return;
+      if (response.statusCode == 200) {
+        return emit(AuthSuccess(status: "profile saved"));
+      } else {
+        return emit(AuthFailure(error: response.body));
+      }
     });
   }
 }

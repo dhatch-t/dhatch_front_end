@@ -111,180 +111,196 @@ class _SearchPageState extends State<SearchPage> {
                 }
               }
             },
-            child: Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+            child: BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                if (state is AuthLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return Center(
+                    child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Builder(builder: (context) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            iconColor: Colors.black,
-                            shape: const CircleBorder()),
-                        child: Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(50),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Builder(builder: (context) {
+                          return ElevatedButton(
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            style: ElevatedButton.styleFrom(
+                                iconColor: Colors.black,
+                                shape: const CircleBorder()),
+                            child: Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: const Icon(
+                                Icons.menu,
+                                size: 35,
+                              ),
+                            ),
+                          );
+                        }),
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                              iconColor: Colors.black,
+                              shape: const CircleBorder()),
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: const Icon(
+                              Icons.notifications,
+                              size: 35,
+                            ),
                           ),
-                          child: const Icon(
-                            Icons.menu,
-                            size: 35,
-                          ),
                         ),
-                      );
-                    }),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                          iconColor: Colors.black, shape: const CircleBorder()),
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: const Icon(
-                          Icons.notifications,
-                          size: 35,
-                        ),
+                      ],
+                    ),
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(5),
+                            topRight: Radius.circular(5)),
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 15, right: 15, left: 15, bottom: 30),
+                            child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextFormField(
+                                      decoration: const InputDecoration(
+                                        hintText: "Select Origin",
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 2, color: Colors.grey)),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 2, color: Colors.grey)),
+                                        errorBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 2, color: Colors.grey)),
+                                        disabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 2, color: Colors.grey)),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 2, color: Colors.grey)),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return "Enter pickup location";
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    TextFormField(
+                                      decoration: const InputDecoration(
+                                        hintText: "Select Destination",
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 2, color: Colors.grey)),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 2, color: Colors.grey)),
+                                        errorBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 2, color: Colors.grey)),
+                                        disabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 2, color: Colors.grey)),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 2, color: Colors.grey)),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return "Enter drop location";
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    SizedBox(
+                                      width:
+                                          MediaQuery.of(context).size.width * 1,
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.black,
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  5)))),
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              const Text("asd");
+                                            }
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5),
+                                            child: Text(
+                                              "Confirm Booking",
+                                              style: GoogleFonts.adamina(
+                                                  fontSize: 20,
+                                                  color: Colors.white),
+                                            ),
+                                          )),
+                                    )
+                                  ],
+                                )),
+                          )
+                        ],
                       ),
                     ),
                   ],
-                ),
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(5),
-                        topRight: Radius.circular(5)),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 15, right: 15, left: 15, bottom: 30),
-                        child: Form(
-                            key: _formKey,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                    hintText: "Select Origin",
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.grey)),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.grey)),
-                                    errorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.grey)),
-                                    disabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.grey)),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.grey)),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Enter pickup location";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                    hintText: "Select Destination",
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.grey)),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.grey)),
-                                    errorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.grey)),
-                                    disabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.grey)),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.grey)),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Enter drop location";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width * 1,
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.black,
-                                          shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)))),
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          const Text("asd");
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5),
-                                        child: Text(
-                                          "Confirm Booking",
-                                          style: GoogleFonts.adamina(
-                                              fontSize: 20,
-                                              color: Colors.white),
-                                        ),
-                                      )),
-                                )
-                              ],
-                            )),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            )),
+                ));
+              },
+            ),
           ),
         ));
   }
