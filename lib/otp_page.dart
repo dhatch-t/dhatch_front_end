@@ -1,20 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
-import 'dart:convert';
-import 'package:cab/bloc/auth_bloc.dart';
-import 'package:cab/login.dart';
-import 'package:cab/search_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:cab/bloc/auth_bloc.dart';
+import 'package:cab/search_page.dart';
 
 class OtpPage extends StatefulWidget {
-  final String? phoneNumber;
+  final String? customerPhoneNumber;
   const OtpPage({
     super.key,
-    this.phoneNumber,
+    this.customerPhoneNumber,
   });
 
   @override
@@ -29,17 +29,15 @@ class _OtpPageState extends State<OtpPage> {
     });
   }
 
-  void getOTP() async {
-    final uri = Uri.parse("http://localhost:8080/otp");
-    await http.post(uri,
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(
-            Login(phoneNumber: widget.phoneNumber.toString()).tojson()));
-  }
-
   @override
   Widget build(BuildContext context) {
-    String? otp;
+    String? customerOtp;
+
+    authLoginEvent(String? customerPhoneNumber) {
+      BlocProvider.of<AuthBloc>(context)
+          .add(AuthLoginEvent(customerPhoneNumber: customerPhoneNumber!));
+    }
+
     return Scaffold(
         appBar: AppBar(),
         body: SafeArea(child: BlocBuilder<AuthBloc, AuthState>(
@@ -58,7 +56,7 @@ class _OtpPageState extends State<OtpPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
-                        "Log in using the OTP sent to +${widget.phoneNumber}",
+                        "Log in using the OTP sent to +${widget.customerPhoneNumber}",
                         style: GoogleFonts.adamina(
                             fontSize: 20, color: Colors.black),
                       ),
@@ -66,7 +64,7 @@ class _OtpPageState extends State<OtpPage> {
                         numberOfFields: 4,
                         keyboardType: TextInputType.number,
                         onSubmit: (value) {
-                          otp = value;
+                          customerOtp = value;
                         },
                       ),
                       show
@@ -81,8 +79,12 @@ class _OtpPageState extends State<OtpPage> {
                                       fontSize: 18, color: Colors.grey),
                                 ),
                                 TextButton(
-                                  onPressed: () {
-                                    getOTP();
+                                  onPressed: () async {
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    String? customerPhoneNumber =
+                                        prefs.getString("customerPhoneNumber");
+                                    authLoginEvent(customerPhoneNumber);
                                   },
                                   child: Text(
                                     "Resend Otp",
@@ -97,7 +99,7 @@ class _OtpPageState extends State<OtpPage> {
                         child: ElevatedButton(
                             onPressed: () async {
                               BlocProvider.of<AuthBloc>(context)
-                                  .add(AuthOtpEvent(otp: otp!));
+                                  .add(AuthOtpEvent(customerOtp: customerOtp!));
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => const SearchPage()));
                             },

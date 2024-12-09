@@ -80,10 +80,12 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                       onPressed: () {
                         BlocProvider.of<AuthBloc>(context).add(AuthLoginEvent(
-                            phoneNumber: _countryCode + _controller.text));
+                            customerPhoneNumber:
+                                _countryCode + _controller.text));
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => OtpPage(
-                                  phoneNumber: _countryCode + _controller.text,
+                                  customerPhoneNumber:
+                                      _countryCode + _controller.text,
                                 )));
                       },
                       style: ElevatedButton.styleFrom(
