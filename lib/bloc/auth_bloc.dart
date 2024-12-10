@@ -15,10 +15,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString("customerPhoneNumber", event.customerPhoneNumber);
       String? uuid = prefs.getString('device_id');
-      emit(AuthLoading());
+
       if (event.customerPhoneNumber.isNotEmpty) {
         final uri = Uri.parse(
-            'http://localhost:8081/Customer/customerLogin/${event.customerPhoneNumber}/$uuid');
+            'http://localhost:8080/Customer/customerLogin/${event.customerPhoneNumber}/$uuid');
         await http.post(
           uri,
           headers: {"Content-Type": "application/json"},
@@ -37,16 +37,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       String? customerPhoneNumber = prefs.getString("customerPhoneNumber");
       emit(AuthLoading());
       if (event.customerOtp.isNotEmpty) {
-        final uri = Uri.parse('http://localhost:8081/Customer/sendOtp');
+        final uri = Uri.parse('http://localhost:8080/Customer/sendOtp');
         final response = await http.post(
           uri,
           headers: {"Content-Type": "application/json"},
           body: json.encode({
             "customerPhoneNumber": customerPhoneNumber,
-            "customerOtp": event.customerOtp
+            "customerOtp": int.parse(event.customerOtp)
           }),
         );
-        print(response.body);
         return emit(AuthSuccess(status: response.body));
       } else {
         return emit(
@@ -60,8 +59,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       String? customerPhoneNumber = prefs.getString("customerPhoneNumber");
 
-      emit(AuthLoading());
-
       if (event.customerName.isEmpty) {
         return emit(AuthFailure(error: "Please enter your name"));
       }
@@ -72,7 +69,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return emit(AuthFailure(error: "Please select the gender"));
       }
 
-      final uri = Uri.parse('http://localhost:8081/Customer/saveProfile');
+      final uri = Uri.parse('http://localhost:8080/Customer/saveProfile');
       final response = await http.post(
         uri,
         headers: {"Content-Type": "application/json"},
@@ -83,6 +80,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           "customerGender": event.customerGender
         }),
       );
+      prefs.setString("customerName", event.customerName);
+      prefs.setString("customerGender", event.customerGender);
+      prefs.setString("customerEmail", event.customerEmail);
       if (response.statusCode == 200) {
         return emit(AuthSuccess(status: "profile saved"));
       } else {

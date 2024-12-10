@@ -276,10 +276,8 @@ class _SearchPageState extends State<SearchPage> {
                                                               Radius.circular(
                                                                   5)))),
                                           onPressed: () {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              const Text("asd");
-                                            }
+                                           _formKey.currentState!
+                                                .validate();
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(5),
