@@ -21,21 +21,21 @@ class OtpPage extends StatefulWidget {
 
 class _OtpPageState extends State<OtpPage> {
   bool show = true;
+  String? customerOtp;
+
   void _callback() {
     setState(() {
       show = false;
     });
   }
 
+  void authLoginEvent(String? customerPhoneNumber) {
+    BlocProvider.of<AuthBloc>(context)
+        .add(AuthLoginEvent(customerPhoneNumber: customerPhoneNumber!));
+  }
+
   @override
   Widget build(BuildContext context) {
-    String? customerOtp;
-
-    authLoginEvent(String? customerPhoneNumber) {
-      BlocProvider.of<AuthBloc>(context)
-          .add(AuthLoginEvent(customerPhoneNumber: customerPhoneNumber!));
-    }
-
     return Scaffold(
         appBar: AppBar(),
         body: SafeArea(
@@ -96,11 +96,16 @@ class _OtpPageState extends State<OtpPage> {
                     width: MediaQuery.of(context).size.width * 0.90,
                     child: ElevatedButton(
                         onPressed: () async {
-                          BlocProvider.of<AuthBloc>(context)
-                              .add(AuthOtpEvent(customerOtp: customerOtp!));
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => const ProfilePage()));
+                          if (customerOtp != null) {
+                            BlocProvider.of<AuthBloc>(context)
+                                .add(AuthOtpEvent(customerOtp: customerOtp!));
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => const ProfilePage()));
+                          } else {
+                            // Handle empty OTP submission here
+                            print("OTP is missing.");
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
@@ -137,6 +142,7 @@ class TimerWidget extends StatefulWidget {
 class _TimerWidgetState extends State<TimerWidget> {
   late Timer _timer;
   int _seconds = 15;
+
   @override
   void initState() {
     super.initState();
@@ -158,7 +164,7 @@ class _TimerWidgetState extends State<TimerWidget> {
             _seconds--;
           });
         } else {
-          _timer.cancel;
+          _timer.cancel(); // Fixed the missing parentheses here
           setState(() {
             widget.callback();
           });

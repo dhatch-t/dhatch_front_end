@@ -16,9 +16,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString("customerPhoneNumber", event.customerPhoneNumber);
       String? uuid = prefs.getString('device_id');
+
       if (event.customerPhoneNumber.isNotEmpty) {
         final uri = Uri.parse(
-            'http://localhost:8080/Customer/customerLogin/${event.customerPhoneNumber}/$uuid');
+            'http://192.168.1.7:8080/Customer/customerLogin/${event.customerPhoneNumber}/$uuid');
         await http.post(
           uri,
           headers: {"Content-Type": "application/json"},
@@ -39,7 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       int otp = int.parse(event.customerOtp);
       if (event.customerOtp.isNotEmpty) {
-        final uri = Uri.parse('http://localhost:8080/Customer/sendOtp');
+        final uri = Uri.parse('http://192.168.1.7:8080/Customer/sendOtp');
         final response = await http.post(
           uri,
           headers: {"Content-Type": "application/json"},
@@ -47,8 +48,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               {"customerPhoneNumber": customerPhoneNumber, "customerOtp": otp}),
         );
         if (response.body == "Existing") {
+          emit(AuthLoading());
           final uri = Uri.parse(
-              'http://localhost:8080/Customer/getCustomerProfile/$customerPhoneNumber');
+              'http://192.168.1.7:8080/Customer/getCustomerProfile/$customerPhoneNumber');
           final response = await http.get(
             uri,
             headers: {"Content-Type": "application/json"},
@@ -85,7 +87,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       prefs.setString("customerGender", event.customerGender);
       prefs.setString("customerEmail", event.customerEmail);
       final uri =
-          Uri.parse('http://localhost:8080/Customer/updateCustomerProfile');
+          Uri.parse('http://192.168.1.7:8080/Customer/updateCustomerProfile');
       final response = await http.post(
         uri,
         headers: {"Content-Type": "application/json"},
